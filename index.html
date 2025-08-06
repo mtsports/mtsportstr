@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <title>MT SPORTS</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background-image: url('https://i.ibb.co/LzWVXxBZ/file-00000000e76861f48c5b2d0a77c23edb.png');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      min-height: 100vh;
+      font-family: Arial, sans-serif;
+      color: white;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px;
+      position: relative;
+      bottom: 85px;
+    }
+
+    .logo {
+      max-width: 250px;
+      width: 80%;
+      position: relative;
+      top: 35px;
+    }
+
+    .title {
+      font-size: 22px;
+      font-weight: bold;
+      text-align: center;
+      margin-bottom: 25px;
+      background: rgba(0, 0, 0, 0.6);
+      padding: 10px 20px;
+      border-radius: 8px;
+      border: 2px solid #0f0;
+      width: 100%;
+      max-width: 800px;
+     
+    }
+
+    video {
+      width: 100%;
+      max-width: 800px;
+      border: 4px solid #0f0;
+      border-radius: 10px;
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+      .title {
+        font-size: 18px;
+        padding: 8px 16px;
+      }
+
+      .logo {
+        max-width: 200px;
+      }
+
+      video {
+        border-width: 3px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .title {
+        font-size: 16px;
+      }
+
+      .logo {
+        max-width: 160px;
+      }
+
+      video {
+        border-width: 2px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Logo -->
+  <img src="https://i.ibb.co/ZzpB1WfN/1753793947451.png" alt="Logo" class="logo">
+
+  <!-- Başlık -->
+  <div class="title">Maç Yayınları - Maç Zamanı Aktif</div>
+
+  <!-- Video Oynatıcı -->
+  <video id="video" controls></video>
+
+  <script>
+    const video = document.getElementById('video');
+    const videoSrc = 'https://a.strmrdr-cf-worker-14731777d8.workers.dev/bc2b05d321cb80050c5d035a9daeb26d/DmodYM9CdSNPUZyc2x7VWd/5062/a.strmrdr-cf-worker-14731777d8.workers.dev/chunklist_hd.m3u8?verify=1754447535456~31.206.157.254~775c6995fc7e5b3dfcebdee4f9081686';
+
+    if (Hls.isSupported()) {
+      const hls = new Hls();
+      hls.loadSource(videoSrc);
+      hls.attachMedia(video);
+      hls.on(Hls.Events.MANIFEST_PARSED, function () {
+        video.play();
+      });
+
+      // Hata olursa otomatik müdahale
+      hls.on(Hls.Events.ERROR, function (event, data) {
+        if (data.fatal) {
+          switch (data.type) {
+            case Hls.ErrorTypes.NETWORK_ERROR:
+              console.warn("Ağ hatası! Yeniden bağlanılıyor...");
+              hls.startLoad();
+              break;
+            case Hls.ErrorTypes.MEDIA_ERROR:
+              console.warn("Medya hatası! Onarılıyor...");
+              hls.recoverMediaError();
+              break;
+            default:
+              console.error("Ciddi hata! Sayfa yenileniyor...");
+              location.reload();
+              break;
+          }
+        }
+      });
+
+    } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+      video.src = videoSrc;
+      video.addEventListener('loadedmetadata', function () {
+        video.play();
+      });
+    } else {
+      alert('Tarayıcınız bu yayını desteklemiyor.');
+    }
+  </script>
+
+</body>
+</html>
